@@ -22,30 +22,64 @@ class ViewController: UIViewController {
         var position: String?
     }
 
+    struct FimItem: Codable {
+        var fimItem: String
+        var seven: String
+        var six: String
+        var five: String
+        var four: String
+        var three: String
+        var two: String
+        var one: String
+        var attention: String
+    }
+
+
     @IBAction func button1(_ sender: Any) {
-        //初期オブジェクト生成
-        let originalObject = Employee(code: "001", name: "山田", age: 45, absence: false)
 
-        //JSONへ変換
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        guard let jsonValue = try? encoder.encode(originalObject) else {
-            fatalError("Failed to encode to JSON")
+        let data:Data?
+        guard let file = Bundle.main.url(forResource: "FIM", withExtension: "json") else {
+            fatalError("ファイルが見つかりません")
+        }
+        
+        do{
+            data  = try? Data(contentsOf: file)
+
+        } catch {
+            fatalError("ファイルをロード不可")
         }
 
-        //JSONデータ確認
-        print("JSONデータ確認")
-        print(String(bytes: jsonValue, encoding: .utf8)!)
-
-        //JSONから変換
-        let decoder = JSONDecoder()
-        guard let employee: Employee = try? decoder.decode(Employee.self, from: jsonValue) else {
-            fatalError("Failed to decode from JSON.")
+        do{
+            guard let data = data else {
+                print("アンラップ失敗")
+                return
+            }
+            let decoder = JSONDecoder()
+            let FimData:[FimItem] = try decoder.decode([FimItem].self, from: data)
+            print(FimData)
+        } catch {
+            fatalError("パース不可")
         }
 
 
-        print("*******最終データ確認********")
-        print(employee)
+        //        //初期オブジェクト生成
+        //        let originalObject = Employee(code: "001", name: "山田", age: 45, absence: false)
+        //        //JSONへ変換
+        //        let encoder = JSONEncoder()
+        //        encoder.outputFormatting = .prettyPrinted
+        //        guard let jsonValue = try? encoder.encode(originalObject) else {
+        //            fatalError("Failed to encode to JSON")
+        //        }
+        //        //JSONデータ確認
+        //        print("JSONデータ確認")
+        //        print(String(bytes: jsonValue, encoding: .utf8)!)
+        //        //JSONから変換
+        //        let decoder = JSONDecoder()
+        //        guard let employee: Employee = try? decoder.decode(Employee.self, from: jsonValue) else {
+        //            fatalError("Failed to decode from JSON.")
+        //        }
+        //        print("*******最終データ確認********")
+        //        print(employee)
 
     }
 
